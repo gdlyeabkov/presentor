@@ -1,0 +1,51 @@
+﻿<Window x:Class="Presentor.PresentationWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Presentor"
+        mc:Ignorable="d"
+        Width="{DynamicResource {x:Static SystemParameters.MaximizedPrimaryScreenWidthKey}}"
+        Height="{DynamicResource {x:Static SystemParameters.MaximizedPrimaryScreenHeight}}"
+        WindowState="Maximized"
+        WindowStyle="SingleBorderWindow"
+    >
+    <Window.Style>
+        <Style TargetType="{x:Type local:PresentationWindow}">
+            <Setter Property="WindowChrome.WindowChrome">
+                <Setter.Value>
+                    <WindowChrome
+                        ResizeBorderThickness="0"
+                        CaptionHeight="0"
+                        CornerRadius="0"
+                        GlassFrameThickness="0"
+                        NonClientFrameEdges="None"
+                    />
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Style>
+    <Window.Triggers>
+        <EventTrigger RoutedEvent="Loaded">
+            <EventTrigger.Actions>
+                <BeginStoryboard>
+                    <Storyboard
+                        x:Name="storyBoard"
+                        Duration="10"
+                    >
+                        
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger.Actions>
+        </EventTrigger>
+    </Window.Triggers>
+    <Canvas
+        x:Name="presentation"
+    >
+        <Canvas.Background>
+            <SolidColorBrush
+                Color="Black"    
+            />
+        </Canvas.Background>
+    </Canvas>
+</Window>

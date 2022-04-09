@@ -1,0 +1,195 @@
+﻿<Window x:Class="Presentor.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Presentor"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:toolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
+        mc:Ignorable="d"
+        Title="Office Ware Pressentor"
+        WindowState="Maximized"
+    >
+    <DockPanel>
+        <!--
+            <Menu
+                Height="25"
+                DockPanel.Dock="Top"    
+            >
+                <MenuItem
+                    Header="Файл"    
+                >
+                </MenuItem>
+                <MenuItem
+                    Header="Слайды"    
+                >
+                    <MenuItem
+                        Header="Создать слайд"
+                        Click="CreateSlideHandler"
+                    />
+                    <MenuItem
+                        Header="Воспрозвести презентацию"
+                        Click="PlayPresentationFromMenuHandler"
+                    />
+                    <MenuItem
+                        Header="Задать фон слайда"
+                        Click="SetSlideBackgroundHandler"
+                    />
+                </MenuItem>
+            </Menu>
+        -->
+        <TabControl
+            DockPanel.Dock="Top"
+            Height="125"    
+        >
+            <TabItem
+                Header="Файл"    
+            >
+                
+            </TabItem>
+            <TabItem
+                Header="Слайды"    
+            >
+                <StackPanel
+                    Orientation="Horizontal"    
+                >
+                    <StackPanel
+                        Margin="50 15"
+                        MouseLeftButtonUp="CreateSlideHandler"
+                    >
+                        <materialDesign:PackIcon
+                            HorizontalAlignment="Center"
+                            Kind="Add"
+                            Width="48"
+                            Height="48"
+                        />
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            Text="Создать слайд"
+                        />
+                    </StackPanel>
+                    <StackPanel
+                        Margin="50 15"
+                        MouseLeftButtonUp="PlayPresentationHandler"
+                    >
+                        <materialDesign:PackIcon
+                            HorizontalAlignment="Center"
+                            Kind="Play"
+                            Width="48"
+                            Height="48"
+                        />
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            Text="Воспроизвести анимацию"
+                        />
+                    </StackPanel>
+                    <StackPanel
+                        Margin="50 15"
+                    >
+                        <toolkit:ColorPicker
+                            HorizontalAlignment="Center"
+                            Width="48"
+                            Height="24"
+                            Margin="0 10"
+                            SelectedColorChanged="SetSlideBackgroundHandler"
+                        />
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            Text="Задать фон слайда"
+                        />
+                    </StackPanel>
+                    <StackPanel
+                        Margin="50 15"
+                    >
+                        <toolkit:TimeSpanUpDown
+                            AllowTextInput="False"
+                            Minimum="01:00"
+                            Value="01:00"
+                            Maximum="15:00"
+                            ShowSeconds="False"
+                            ShowDays="False"
+                            Margin="0 10 0 0"
+                            ValueChanged="SetSlideDurationHandler"
+                        />
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            Text="Задать продолжительность слайда"
+                            Margin="0 10 0 0"
+                        />
+                    </StackPanel>
+                </StackPanel>
+            </TabItem>
+        </TabControl>
+        <DockPanel
+            Background="Blue"
+            DockPanel.Dock="Bottom" 
+            Height="25"
+        >
+            <StackPanel
+                Width="350"
+                DockPanel.Dock="Left"
+                Orientation="Horizontal"    
+            >
+                <TextBlock
+                   x:Name="slidesStatsLabel"
+                   Margin="5"
+                   Text="Слайд 1 из 1"    
+                />
+            </StackPanel>
+            <StackPanel
+                Width="350"
+                DockPanel.Dock="Right"
+                Orientation="Horizontal"    
+            >
+                <materialDesign:PackIcon
+                    Margin="5"
+                    Kind="Slideshow"    
+                    HorizontalContentAlignment="Right"
+                    MouseLeftButtonDown="PlayPresentationHandler"
+                />
+            </StackPanel>
+        </DockPanel>
+        <ScrollViewer
+            DockPanel.Dock="Left"        
+        >
+            <StackPanel
+                x:Name="slides"    
+                Background="Red"
+                Width="250"
+                MouseLeftButtonUp="ClearSelectionHandler"
+            >
+                <StackPanel.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem
+                            Header="Создать слайд"
+                            Click="CreateSlideHandler"
+                        />
+                    </ContextMenu>
+                </StackPanel.ContextMenu>
+                <Rectangle
+                    Height="100"    
+                    Margin="25"
+                    Fill="White"    
+                    Stroke="SlateGray"
+                    StrokeThickness="5"
+                    MouseLeftButtonDown="SelectSlideHandler"
+                    MouseEnter="StartSlideFocusHandler"
+                    MouseLeave="StopSlideFocusHandler"
+                />
+            </StackPanel>
+        </ScrollViewer>
+        <TabControl
+            x:Name="slideControl"    
+            DockPanel.Dock="Right"    
+        >
+            <TabItem>
+                <Canvas
+                    x:Name="activeSlide"
+                    Background="Green"
+                >
+
+                </Canvas>
+            </TabItem>
+        </TabControl>
+    </DockPanel>
+</Window>
