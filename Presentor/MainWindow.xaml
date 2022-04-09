@@ -9,35 +9,9 @@
         mc:Ignorable="d"
         Title="Office Ware Pressentor"
         WindowState="Maximized"
+        KeyUp="GlobakHotKeyHandler"
     >
     <DockPanel>
-        <!--
-            <Menu
-                Height="25"
-                DockPanel.Dock="Top"    
-            >
-                <MenuItem
-                    Header="Файл"    
-                >
-                </MenuItem>
-                <MenuItem
-                    Header="Слайды"    
-                >
-                    <MenuItem
-                        Header="Создать слайд"
-                        Click="CreateSlideHandler"
-                    />
-                    <MenuItem
-                        Header="Воспрозвести презентацию"
-                        Click="PlayPresentationFromMenuHandler"
-                    />
-                    <MenuItem
-                        Header="Задать фон слайда"
-                        Click="SetSlideBackgroundHandler"
-                    />
-                </MenuItem>
-            </Menu>
-        -->
         <TabControl
             DockPanel.Dock="Top"
             Height="125"    
@@ -87,6 +61,7 @@
                         Margin="50 15"
                     >
                         <toolkit:ColorPicker
+                            x:Name="backgroundPicker"
                             HorizontalAlignment="Center"
                             Width="48"
                             Height="24"
@@ -102,6 +77,7 @@
                         Margin="50 15"
                     >
                         <toolkit:TimeSpanUpDown
+                            x:Name="durationPicker"
                             AllowTextInput="False"
                             Minimum="01:00"
                             Value="01:00"
@@ -115,6 +91,69 @@
                             HorizontalAlignment="Center"
                             Text="Задать продолжительность слайда"
                             Margin="0 10 0 0"
+                        />
+                    </StackPanel>
+                </StackPanel>
+            </TabItem>
+            <TabItem
+                Header="Вставка"    
+            >
+                <StackPanel
+                    Orientation="Horizontal"    
+                >
+                    <StackPanel
+                        Margin="50 15"
+                        DataContext="Текстовая область"
+                        MouseLeftButtonUp="SelectToolHandler"
+                    >
+                        <materialDesign:PackIcon
+                            HorizontalAlignment="Center"
+                            Kind="TextBox"
+                            Width="48"
+                            Height="48"
+                        />
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            Text="Текстовая область"
+                        />
+                    </StackPanel>
+                    <StackPanel
+                        Margin="50 15"
+                        DataContext="Картинка"
+                        MouseLeftButtonUp="SelectPictureToolHandler"
+                    >
+                        <materialDesign:PackIcon
+                            HorizontalAlignment="Center"
+                            Kind="Image"
+                            Width="48"
+                            Height="48"
+                        />
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            Text="Картинка"
+                        />
+                    </StackPanel>
+                </StackPanel>
+            </TabItem>
+            <TabItem
+                Header="Анимация"    
+            >
+                <StackPanel
+                    Orientation="Horizontal"    
+                >
+                    <StackPanel
+                        Margin="50 15"
+                        MouseLeftButtonUp="AddAnimationHandler"
+                    >
+                        <materialDesign:PackIcon
+                            HorizontalAlignment="Center"
+                            Kind="Animation"
+                            Width="48"
+                            Height="48"
+                        />
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            Text="Анимация"
                         />
                     </StackPanel>
                 </StackPanel>
@@ -182,10 +221,15 @@
             x:Name="slideControl"    
             DockPanel.Dock="Right"    
         >
-            <TabItem>
+            <TabItem
+                Visibility="Collapsed"    
+            >
                 <Canvas
                     x:Name="activeSlide"
                     Background="Green"
+                    MouseLeftButtonDown="TouchDownHandler"
+                    MouseMove="ToolMoveHandler"
+                    MouseLeftButtonUp="ToolResetHandler"
                 >
 
                 </Canvas>
