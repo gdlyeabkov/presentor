@@ -483,5 +483,79 @@ namespace Presentor
             }
         }
 
+        private void OpenPresentationHandler(object sender, MouseButtonEventArgs e)
+        {
+            Microsoft.Win32.OpenFileDialog ofd = new Microsoft.Win32.OpenFileDialog();
+            ofd.Title = "Выберите презентацию для открытия";
+            ofd.Filter = "Office Ware Presentor documents (.ptr)|*.ptr";
+            bool? res = ofd.ShowDialog();
+            bool isOpened = res != false;
+            if (isOpened)
+            {
+                ClosePresentation();
+            }
+        }
+
+        private void SavePresentationHandler(object sender, MouseButtonEventArgs e)
+        {
+            SavePresentation();
+        }
+
+        public void SavePresentation ()
+        {
+            Microsoft.Win32.SaveFileDialog sfd = new Microsoft.Win32.SaveFileDialog();
+            sfd.Title = "Выберите файл для сохранения";
+            sfd.Filter = "Office Ware Presentor documents (.ptr)|*.ptr";
+            bool? res = sfd.ShowDialog();
+            bool isSaved = res != false;
+            if (isSaved)
+            {
+
+            }
+        }
+
+        private void ClosePresentationHandler(object sender, MouseButtonEventArgs e)
+        {
+            ClosePresentation();
+        }
+
+        public void ClosePresentation()
+        {
+            int countRecords = history.Count;
+            bool isHaveRecords = countRecords >= 1;
+            if (isHaveRecords)
+            {
+                MessageBoxResult result = System.Windows.MessageBox.Show("Мы заметили что вы не сохранили изменения. Сохранить?", "Внимание", MessageBoxButton.OKCancel);
+                switch (result)
+                {
+                    case MessageBoxResult.OK:
+                        SavePresentation();
+                        history.Clear();
+                        ClosePresentation();
+                        break;
+                }
+            }
+            else
+            {
+                history.Clear();
+                ItemCollection allSlides = slideControl.Items;
+                int countSlides = allSlides.Count;
+                currentSlide = 0;
+                slideControl.SelectedIndex = currentSlide;
+                UIElementCollection slideItems = activeSlide.Children;
+                int countSlideItems = slideItems.Count;
+                for (int i = countSlideItems - 1; i >= 0; i--)
+                {
+                    UIElement slideItem = slideItems[i];
+                    activeSlide.Children.RemoveAt(i);
+                }
+                for (int i = 1; i < countSlides; i++)
+                {
+                    slideControl.Items.RemoveAt(i);
+                }
+            }
+        }
+
+
     }
 }

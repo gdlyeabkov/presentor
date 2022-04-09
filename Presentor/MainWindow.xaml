@@ -19,7 +19,55 @@
             <TabItem
                 Header="Файл"    
             >
-                
+                <StackPanel
+                    Orientation="Horizontal"    
+                >
+                    <StackPanel
+                        Margin="50 15"
+                        MouseLeftButtonUp="OpenPresentationHandler"
+                    >
+                        <materialDesign:PackIcon
+                            HorizontalAlignment="Center"
+                            Kind="OpenInApp"
+                            Width="48"
+                            Height="48"
+                        />
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            Text="Открыть презентацию"
+                        />
+                    </StackPanel>
+                    <StackPanel
+                        Margin="50 15"
+                        MouseLeftButtonUp="SavePresentationHandler"
+                    >
+                        <materialDesign:PackIcon
+                            HorizontalAlignment="Center"
+                            Kind="ContentSave"
+                            Width="48"
+                            Height="48"
+                        />
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            Text="Сохранить презентацию"
+                        />
+                    </StackPanel>
+                    <StackPanel
+                        Margin="50 15"
+                        MouseLeftButtonUp="ClosePresentationHandler"
+                    >
+                        <materialDesign:PackIcon
+                            HorizontalAlignment="Center"
+                            Kind="Close"
+                            Width="48"
+                            Height="48"
+                        />
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            Text="Закрыть презентацию"
+                        />
+                    </StackPanel>
+                </StackPanel>
             </TabItem>
             <TabItem
                 Header="Слайды"    
