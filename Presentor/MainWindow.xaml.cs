@@ -587,12 +587,95 @@ namespace Presentor
                     object rawSlideContent = slide.Content;
                     Canvas slideContent = ((Canvas)(rawSlideContent));
                     BrushConverter brushConverter = new BrushConverter();
-                    Brush brush = ((Brush)(brushConverter.ConvertFrom(savedContent.backgrounds[i])));
+                    List<string> backgrounds = savedContent.backgrounds;
+                    string background = backgrounds[i];
+                    object rawBrush = brushConverter.ConvertFrom(background);
+                    Brush brush = ((Brush)(rawBrush));
                     slideContent.Background = brush;
                 }
                 for (int i = 0; i < savedContent.count; i++)
                 {
-                    rawSlides[i]["duration"] = savedContent.durations[i];
+                    List<int> durations = savedContent.durations;
+                    rawSlides[i]["duration"] = durations[i];
+                }
+                foreach (Dictionary<String, Object> item in savedContent.items)
+                {
+                    object cachedX = item["x"];
+                    int rawItemX = ((int)(cachedX));
+                    string parsedItemX = rawItemX.ToString();
+                    double itemX = Double.Parse(parsedItemX);
+                    object cachedY = item["y"];
+                    int rawItemY = ((int)(cachedY));
+                    string parsedItemY = rawItemY.ToString();
+                    double itemY = Double.Parse(parsedItemY);
+                    object cachedWidth = item["width"];
+                    int rawItemWidth = ((int)(cachedWidth));
+                    string parsedItemWidth = rawItemWidth.ToString();
+                    double itemWidth = Double.Parse(parsedItemWidth);
+                    object cachedHeight = item["height"];
+                    int rawItemHeight = ((int)(cachedHeight));
+                    string parsedItemHeight = rawItemHeight.ToString();
+                    double itemHeight = Double.Parse(parsedItemHeight);
+                    string itemSource = ((string)(item["source"]));
+                    string itemType = ((string)(item["type"]));
+                    int itemSlide = ((int)(item["slide"]));
+                    object rawItemAnimation = item["animation"];
+                    Dictionary<String, Object> itemAnimation = ((Dictionary<String, Object>)(rawItemAnimation));
+                    bool isTextAreaItem = itemType == "TextArea";
+                    bool isPictureItem = itemType == "Picture";
+                    UIElement control = null;
+                    Dictionary<String, Object> controlData = new Dictionary<String, Object>();
+                    controlData = itemAnimation;
+                    Dictionary<String, Object> parsedControlData = ((Dictionary<String, Object>)(controlData));
+                    if (isTextAreaItem)
+                    {
+                        control = new System.Windows.Controls.TextBox();
+                        System.Windows.Controls.TextBox element = control as System.Windows.Controls.TextBox;
+                        element.Width = itemWidth;
+                        element.Height = itemHeight;
+                        element.Text = itemSource;
+                        element.Background = System.Windows.Media.Brushes.Transparent;
+                        element.HorizontalContentAlignment = System.Windows.HorizontalAlignment.Center;
+                        element.VerticalContentAlignment = System.Windows.VerticalAlignment.Center;
+                        System.Windows.Controls.ContextMenu contextMenu = new System.Windows.Controls.ContextMenu();
+                        System.Windows.Controls.MenuItem contextMenuItem = new System.Windows.Controls.MenuItem();
+                        contextMenuItem.Header = "Удалить";
+                        contextMenuItem.DataContext = ((UIElement)(textArea));
+                        contextMenuItem.Click += RemoveControlHandler;
+                        contextMenu.Items.Add(contextMenuItem);
+                        element.ContextMenu = contextMenu;
+                        element.GotFocus += ActivateControlHandler;
+                        element.DataContext = parsedControlData;
+                    }
+                    else if (isPictureItem)
+                    {
+                        control = new Image();
+                        Image element = control as Image;
+                        element.Width = itemWidth;
+                        element.Height = itemHeight; 
+                        element.BeginInit();
+                        Uri itemSourceUri = new Uri(itemSource);
+                        element.Source = new BitmapImage(itemSourceUri);
+                        element.EndInit();
+                        System.Windows.Controls.ContextMenu contextMenu = new System.Windows.Controls.ContextMenu();
+                        System.Windows.Controls.MenuItem contextMenuItem = new System.Windows.Controls.MenuItem();
+                        contextMenuItem.Header = "Удалить";
+                        contextMenuItem.DataContext = ((UIElement)(textArea));
+                        contextMenuItem.Click += RemoveControlHandler;
+                        contextMenu.Items.Add(contextMenuItem);
+                        element.ContextMenu = contextMenu;
+                        element.MouseLeftButtonDown += ActivateControlHandler;
+                        element.DataContext = parsedControlData;
+                    }
+                    ItemCollection slideControlItems = slideControl.Items;
+                    object rawSlideControlItem = slideControlItems[itemSlide];
+                    TabItem slideControlItem = ((TabItem)(rawSlideControlItem));
+                    object rawSlideControlItemContent = slideControlItem.Content;
+                    Canvas slideControlItemContent = ((Canvas)(rawSlideControlItemContent));
+                    UIElementCollection slideControlItemContentChildren = slideControlItemContent.Children;
+                    slideControlItemContentChildren.Add(control);
+                    Canvas.SetLeft(control, itemX);
+                    Canvas.SetTop(control, itemY);
                 }
             }
         }
@@ -628,12 +711,60 @@ namespace Presentor
                     int duration = ((int)(rawSlideDuration));
                     durations.Add(duration);
                 }
+                List<Dictionary<String, Object>> items = new List<Dictionary<String, Object>>();
+                foreach (TabItem slideControlItem in slideControl.Items)
+                {
+                    object rawSlideControlItemContent = slideControlItem.Content;
+                    Canvas slideControlItemContent = ((Canvas)(rawSlideControlItemContent));
+                    foreach (UIElement slideControlItemContentElement in slideControlItemContent.Children)
+                    {
+                        bool isTextAreaItem = slideControlItemContentElement is System.Windows.Controls.TextBox;
+                        bool isPictureItem = slideControlItemContentElement is Image;
+                        string itemType = "";
+                        double itemWidth = 0;
+                        double itemHeight = 0;
+                        string itemSource = "";
+                        int itemSlide = slideControl.Items.IndexOf(slideControlItem);
+                        Dictionary<String, Object> itemAnimation = null;
+                        object rawItemAnimation = null;
+                        if (isTextAreaItem)
+                        {
+                            itemType = "TextArea";
+                            System.Windows.Controls.TextBox control = slideControlItemContentElement as System.Windows.Controls.TextBox;
+                            itemWidth = ((int)(control.Width));
+                            itemHeight = ((int)(control.Height));
+                            itemSource = control.Text;
+                            rawItemAnimation = control.DataContext;
+                        }
+                        else if (isPictureItem)
+                        {
+                            itemType = "Picture";
+                            Image control = slideControlItemContentElement as Image;
+                            itemWidth = ((int)(control.Width));
+                            itemHeight = ((int)(control.Height)); 
+                            itemSource = control.Source.ToString();
+                            rawItemAnimation = control.DataContext;
+                        }
+                        itemAnimation = ((Dictionary<String, Object>)(rawItemAnimation));
+                        Dictionary<String, Object>  item = new Dictionary<String, Object>();
+                        item.Add("x", ((int)(Canvas.GetLeft(slideControlItemContentElement))));
+                        item.Add("y", ((int)(Canvas.GetTop(slideControlItemContentElement))));
+                        item.Add("width", itemWidth);
+                        item.Add("height", itemHeight);
+                        item.Add("type", itemType);
+                        item.Add("source", itemSource);
+                        item.Add("slide", itemSlide);
+                        item.Add("animation", itemAnimation);
+                        items.Add(item);
+                    }
+                }
                 JavaScriptSerializer js = new JavaScriptSerializer();
                 string savedContent = js.Serialize(new SavedContent
                 {
                     count = slides.Children.Count,
                     backgrounds = backgrounds,
-                    durations = durations
+                    durations = durations,
+                    items = items
                 });
                 File.WriteAllText(fullPath, savedContent);
             }
@@ -833,6 +964,7 @@ namespace Presentor
         public int count;
         public List<string> backgrounds;
         public List<int> durations;
+        public List<Dictionary<String, Object>> items;
     }
 
 }
