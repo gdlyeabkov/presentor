@@ -10,6 +10,7 @@
         Title="Office Ware Pressentor"
         WindowState="Maximized"
         KeyUp="GlobakHotKeyHandler"
+        Loaded="WindowLoadedHandler"
     >
     <DockPanel>
         <TabControl
@@ -208,7 +209,7 @@
             </TabItem>
         </TabControl>
         <DockPanel
-            Background="Blue"
+            Background="AliceBlue"
             DockPanel.Dock="Bottom" 
             Height="25"
         >
@@ -241,7 +242,7 @@
         >
             <StackPanel
                 x:Name="slides"    
-                Background="Red"
+                Background="LightGray"
                 Width="250"
                 MouseLeftButtonUp="ClearSelectionHandler"
             >
@@ -256,32 +257,81 @@
                 <Rectangle
                     Height="100"    
                     Margin="25"
-                    Fill="White"    
                     Stroke="SlateGray"
                     StrokeThickness="5"
                     MouseLeftButtonDown="SelectSlideHandler"
                     MouseEnter="StartSlideFocusHandler"
                     MouseLeave="StopSlideFocusHandler"
-                />
+                >
+                    <Rectangle.Fill>
+                        <ImageBrush />
+                    </Rectangle.Fill>
+                </Rectangle>
             </StackPanel>
         </ScrollViewer>
-        <TabControl
-            x:Name="slideControl"    
+        <DockPanel
             DockPanel.Dock="Right"    
         >
-            <TabItem
-                Visibility="Collapsed"    
+            <StackPanel
+                x:Name="animationBar"
+                DockPanel.Dock="Right"
+                Width="325"
+                Background="AliceBlue"
+                Visibility="Collapsed"
             >
-                <Canvas
-                    x:Name="activeSlide"
-                    Background="Green"
-                    MouseLeftButtonDown="TouchDownHandler"
-                    MouseMove="ToolMoveHandler"
-                    MouseLeftButtonUp="ToolResetHandler"
+                <TextBlock
+                    Margin="15"
+                    Text="Продолжительность анимации начала"    
+                />
+                <toolkit:TimeSpanUpDown
+                    x:Name="startAnimationDurationPicker"
+                    AllowTextInput="False"
+                    Minimum="01:00"
+                    Value="01:00"
+                    Maximum="15:00"
+                    ShowSeconds="False"
+                    ShowDays="False"
+                    Margin="25 5"
+                    DataContext="start"
+                    ValueChanged="SetAnimationDurationHandler"
+                />
+                <TextBlock
+                    Margin="15"
+                    Text="Продолжительность анимации конца"    
+                />
+                <toolkit:TimeSpanUpDown
+                    x:Name="endAnimationDurationPicker"
+                    AllowTextInput="False"
+                    Minimum="01:00"
+                    Value="01:00"
+                    Maximum="15:00"
+                    ShowSeconds="False"
+                    ShowDays="False"
+                    Margin="25 5"
+                    DataContext="end"
+                    ValueChanged="SetAnimationDurationHandler"
+                />
+            </StackPanel>
+            <TabControl
+                x:Name="slideControl"    
+                Cursor="Pen"
+                DockPanel.Dock="Left"
+                SelectionChanged="DetectUpdateSlideHandler"
+            >
+                <TabItem
+                    Visibility="Collapsed"    
                 >
+                    <Canvas
+                        x:Name="activeSlide"
+                        Background="White"
+                        MouseLeftButtonDown="TouchDownHandler"
+                        MouseMove="ToolMoveHandler"
+                        MouseLeftButtonUp="ToolResetHandler"
+                    >
 
-                </Canvas>
-            </TabItem>
-        </TabControl>
+                    </Canvas>
+                </TabItem>
+            </TabControl>
+        </DockPanel>
     </DockPanel>
 </Window>
